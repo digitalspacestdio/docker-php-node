@@ -2,7 +2,7 @@ name: Build & Publish php with nodejs multi-arch images to GHCR
 
 on:
   push:
-    branches: [ master ]
+    branches: [ main ]
     paths:
       - 'src/**'
   workflow_dispatch:

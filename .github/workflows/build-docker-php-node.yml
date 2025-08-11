@@ -35,11 +35,11 @@ jobs:
       - name: Build & Push PHP ${{ matrix.php }}-node${{ matrix.node }}-composer${{ matrix.composer }}-${{ matrix.variant }}
         uses: docker/build-push-action@v4
         with:
-          context: compose/docker/php-node-symfony
-          file: compose/docker/php-node-symfony/Dockerfile.${{ matrix.php }}.${{ matrix.variant }}
+          context: src
+          file: src/Dockerfile.${{ matrix.php }}.${{ matrix.variant }}
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: ghcr.io/${{ github.repository_owner }}/orodc-php-node-symfony:${{ matrix.php }}-${{ matrix.node }}-${{ matrix.composer }}-${{ matrix.variant }}
+          tags: ghcr.io/${{ github.repository_owner }}/docker-php-node:${{ matrix.php }}-${{ matrix.node }}-${{ matrix.composer }}-${{ matrix.variant }}
           build-args: |
             PHP_VERSION=${{ matrix.php }}
             NODE_VERSION=${{ matrix.node }}
@@ -68,11 +68,11 @@ jobs:
       - name: Build & Push PHP ${{ matrix.php }}-node${{ matrix.node }}-composer${{ matrix.composer }}-${{ matrix.variant }}
         uses: docker/build-push-action@v4
         with:
-          context: compose/docker/php-node-symfony
-          file: compose/docker/php-node-symfony/Dockerfile.${{ matrix.php }}.${{ matrix.variant }}
+          context: src
+          file: src/Dockerfile.${{ matrix.php }}.${{ matrix.variant }}
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: ghcr.io/${{ github.repository_owner }}/orodc-php-node-symfony:${{ matrix.php }}-${{ matrix.node }}-${{ matrix.composer }}-${{ matrix.variant }}
+          tags: ghcr.io/${{ github.repository_owner }}/docker-php-node:${{ matrix.php }}-${{ matrix.node }}-${{ matrix.composer }}-${{ matrix.variant }}
           build-args: |
             PHP_VERSION=${{ matrix.php }}
             NODE_VERSION=${{ matrix.node }}

@@ -103,7 +103,7 @@ RUN set -eux; \
   docker-php-source extract; \
   docker-php-ext-configure zip; \
   docker-php-ext-configure imap --with-imap --with-imap-ssl; \
-  docker-php-ext-configure gd --with-freetype --with-webp --with-jpeg; \
+  docker-php-ext-configure gd --with-jpeg-dir=/usr/include --with-png-dir=/usr/include --with-webp-dir=/usr/include; \
   \
   mkdir -p /usr/src/php/ext/igbinary; \
   curl -fsSL https://github.com/igbinary/igbinary/archive/$EXT_IGBINARY_VERSION.tar.gz | tar xvz -C /usr/src/php/ext/igbinary --strip 1; \

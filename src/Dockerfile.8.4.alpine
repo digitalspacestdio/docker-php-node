@@ -60,7 +60,6 @@ RUN apk add --no-cache \
     rsync \
     libpq \
     vim \
-    micro \
     postgresql-client \
     mysql-client \
     util-linux \
@@ -216,7 +215,6 @@ RUN echo http://dl-2.alpinelinux.org/alpine/edge/main >> /etc/apk/repositories; 
     apk add --no-cache \
     shadow \
     htop \
-    btop \
   ;
 
 RUN apk add --no-cache --sudo; \

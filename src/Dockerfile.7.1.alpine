@@ -1,16 +1,16 @@
-ARG ALPINE_VERSION=3.15
-ARG NODE_VERSION=16
-ARG PHP_VERSION=7.4
-ARG COMPOSER_VERSION=2
+ARG ALPINE_VERSION=3.10
+ARG NODE_VERSION=12
+ARG PHP_VERSION=7.1
+ARG COMPOSER_VERSION=1
 
 # Nodejs image
-FROM node:${NODE_VERSION}-alpine${ALPINE_VERSION} AS app_node
+FROM node:${NODE_VERSION}-alpine${ALPINE_VERSION} AS layer_node
 
 # Composer image
-FROM composer:${COMPOSER_VERSION} AS composer_app
+FROM composer:${COMPOSER_VERSION} AS layer_composer
 
 # Php image
-FROM php:${PHP_VERSION}-fpm-alpine${ALPINE_VERSION} AS app_php
+FROM php:${PHP_VERSION}-fpm-alpine${ALPINE_VERSION} AS layer_php
 
 ARG STABILITY="stable"
 ENV STABILIT=${STABILITY}
@@ -29,8 +29,8 @@ ENV PHP_USER_GROUP=${PHP_USER_GROUP}
 
 ARG EXT_REDIS_VERSION=5.3.7
 ARG EXT_IGBINARY_VERSION=3.2.15
-ARG EXT_MONGODB_VERSION=1.19.4
-ARG EXT_XDEBUG_VERSION=3.1.6
+ARG EXT_MONGODB_VERSION=1.9.0
+ARG EXT_XDEBUG_VERSION=2.9.8
 
 # persistent / runtime deps
 RUN apk add --no-cache \
@@ -42,7 +42,6 @@ RUN apk add --no-cache \
     openssh \
     bash \
     curl \
-    msmtp-openrc \
     msmtp \
     jpegoptim \
     pngquant \
@@ -103,7 +102,7 @@ RUN set -eux; \
   docker-php-source extract; \
   docker-php-ext-configure zip; \
   docker-php-ext-configure imap --with-imap --with-imap-ssl; \
-  docker-php-ext-configure gd --with-freetype --with-webp --with-jpeg; \
+  docker-php-ext-configure gd --with-jpeg-dir=/usr/include --with-png-dir=/usr/include --with-webp-dir=/usr/include; \
   \
   mkdir -p /usr/src/php/ext/igbinary; \
   curl -fsSL https://github.com/igbinary/igbinary/archive/$EXT_IGBINARY_VERSION.tar.gz | tar xvz -C /usr/src/php/ext/igbinary --strip 1; \
@@ -186,8 +185,8 @@ COPY app.xdebug.ini $PHP_INI_DIR/conf.d/
 COPY php-fpm.conf /usr/local/etc/php-fpm.conf
 
 # Copy nodejs binaries
-COPY --from=app_node /usr/local /usr/local
-COPY --from=app_node /opt /opt
+COPY --from=layer_node /usr/local /usr/local
+COPY --from=layer_node /opt /opt
 
  # smoke test
 RUN node --version && npm --version && yarn --version
@@ -201,7 +200,7 @@ ENV XDEBUG_MODE=off
 # https://getcomposer.org/doc/03-cli.md#composer-allow-superuser
 ENV COMPOSER_ALLOW_SUPERUSER=1
 ENV PATH="${PATH}:/root/.composer/vendor/bin"
-COPY --from=composer_app /usr/bin/composer /usr/bin/composer
+COPY --from=layer_composer /usr/bin/composer /usr/bin/composer
 
 # persistent / runtime deps
 RUN echo http://dl-2.alpinelinux.org/alpine/edge/main >> /etc/apk/repositories; \
